@@ -16,10 +16,7 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        "https://blys-task-manager-client.vercel.app",
-    ],
+    origin: true,
     credentials: true,
 }));
 
