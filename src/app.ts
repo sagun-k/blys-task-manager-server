@@ -16,9 +16,13 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 app.use(cors({
-    origin: true,
+    origin: [
+        "http://localhost:5173",
+        "https://blys-task-manager-client.vercel.app",
+    ],
     credentials: true,
 }));
+
 
 app.use(express.json());
 app.use(cookieParser()); // ✅ must come before any middleware using req.cookies
