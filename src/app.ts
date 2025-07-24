@@ -16,9 +16,10 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true,  // if you want to allow cookies, authorization headers etc.
+    origin: true,
+    credentials: true,
 }));
+
 app.use(express.json());
 app.use(cookieParser()); // ✅ must come before any middleware using req.cookies
 
