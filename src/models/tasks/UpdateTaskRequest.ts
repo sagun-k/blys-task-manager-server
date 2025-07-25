@@ -1,5 +1,4 @@
-﻿import {TaskStatus} from "../../enums/TaskStatus";
-import {Priority} from "../../enums/Priority";
+﻿import {Priority} from "../../enums/Priority";
 
 /**
  * @openapi
@@ -20,13 +19,6 @@ import {Priority} from "../../enums/Priority";
  *         description:
  *           type: string
  *           example: "Complete the quarterly financial report."
- *         status:
- *           type: string
- *           enum:
- *             - PENDING
- *             - IN_PROGRESS
- *             - COMPLETED
- *           example: IN_PROGRESS
  *         priority:
  *           type: string
  *           enum:
@@ -43,7 +35,6 @@ export interface UpdateTaskRequest {
     id: string;
     title?: string;
     description?: string;
-    status?: TaskStatus;
     priority?: Priority;
     endDate?: string;
 }

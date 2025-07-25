@@ -6,6 +6,8 @@ import {TaskStatus} from "../enums/TaskStatus";
 import {PaginationResponse} from "../models/PaginationResponse";
 import {Task} from "../models/tasks/Task";
 import {TaskStats} from "../models/tasks/TaskStats";
+import {UpdateTaskRequest} from "../models/tasks/UpdateTaskRequest";
+import {UpdateTaskStatusRequest} from "../models/tasks/UpdateTaskStatusRequest";
 
 export class TaskService {
     static async create(task: CreateTaskRequest, userId: string) {
@@ -50,7 +52,7 @@ export class TaskService {
             totalPages: Math.ceil(total / limit),
         };
     }
-    static async update(taskId: string, updates: Partial<CreateTaskRequest>, userId: string) {
+    static async update(taskId: string, updates: Partial<UpdateTaskRequest>, userId: string) {
         return prisma.task.update({
             where: { id: taskId },
             data: {
@@ -68,34 +70,59 @@ export class TaskService {
     }
 
     static async getTaskStats(userId: string): Promise<TaskStats> {
-        const [total, pending, inProgress, completed] = await prisma.$transaction([
-            prisma.task.count({
-                where: { createdBy: userId },
-            }),
-            prisma.task.count({
-                where: {
-                    createdBy: userId,
-                    status: "PENDING",
-                },
-            }),
-            prisma.task.count({
-                where: {
-                    createdBy: userId,
-                    status: "IN_PROGRESS",
-                },
-            }),
-            prisma.task.count({
-                where: {
-                    createdBy: userId,
-                    status: "COMPLETED",
-                },
-            }),
-        ]);
-        return {
+        const [
             total,
             pending,
             inProgress,
             completed,
+            low,
+            medium,
+            high,
+        ] = await prisma.$transaction([
+            prisma.task.count({
+                where: { createdBy: userId },
+            }),
+            prisma.task.count({
+                where: { createdBy: userId, status: "PENDING" },
+            }),
+            prisma.task.count({
+                where: { createdBy: userId, status: "IN_PROGRESS" },
+            }),
+            prisma.task.count({
+                where: { createdBy: userId, status: "COMPLETED" },
+            }),
+            prisma.task.count({
+                where: { createdBy: userId, priority: "LOW" },
+            }),
+            prisma.task.count({
+                where: { createdBy: userId, priority: "MEDIUM" },
+            }),
+            prisma.task.count({
+                where: { createdBy: userId, priority: "HIGH" },
+            }),
+        ]);
+
+        return {
+            total,
+            status: {
+                pending,
+                inProgress,
+                completed,
+            },
+            priority: {
+                low,
+                medium,
+                high,
+            },
         };
     }
+
+    static async updateTaskStatus(taskId: string, request: UpdateTaskStatusRequest) {
+        return prisma.task.update({
+            where: { id: taskId },
+            data: { status: request.status },
+        });
+    }
+
+
 }

@@ -20,3 +20,10 @@ export const createTaskValidation = [
         .withMessage("EndDate must be a valid ISO 8601 date"),
     body("assignedTo").optional().isUUID().withMessage("AssignedTo must be a valid UUID"),
 ];
+
+export const updateStatusTaskValidation = [
+    body("status")
+        .notEmpty()
+        .isIn(Object.values(TaskStatus))
+        .withMessage(`Invalid status, must be one of: ${Object.values(TaskStatus).join(", ")}`),
+];
