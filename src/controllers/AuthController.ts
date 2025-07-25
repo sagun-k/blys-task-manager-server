@@ -22,7 +22,7 @@ export class AuthController {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 maxAge: 1000 * 60 * 60,
-                sameSite: "none",
+                sameSite: process.env.NODE_ENV === "production"? "none":'strict',
                 path: "/",
             });
             res.json(user);
@@ -45,7 +45,7 @@ export class AuthController {
         res.clearCookie("token", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite:process.env.NODE_ENV === "production"? "none":'strict',
             path: "/",
         });
         res.status(200).json({ message: "Successfully logged out" });
