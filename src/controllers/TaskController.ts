@@ -33,4 +33,14 @@ export class TaskController {
         const stats = await TaskService.getTaskStats(req.user!.userId);
         res.json(stats);
     }
+
+    static async updateStatus(req: Request, res: Response) {
+        const { id } = req.params;
+        try {
+            const updated = await TaskService.updateTaskStatus(id, req.body);
+            return res.status(200).json(updated);
+        } catch (error) {
+            return res.status(500).json({ error: "Failed to update task status" });
+        }
+    }
 }

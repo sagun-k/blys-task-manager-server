@@ -1,6 +1,6 @@
 ﻿import { Router } from "express";
 import { authenticateJWT } from "../../middlewares/authMiddleware";
-import { createTaskValidation } from "../../middlewares/taskValidator";
+import {createTaskValidation, updateStatusTaskValidation} from "../../middlewares/taskValidator";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { TaskController } from "../../controllers/TaskController";
 
@@ -185,5 +185,32 @@ taskRouter.delete("/:id", TaskController.delete);
  *               $ref: '#/components/schemas/Error'
  */
 taskRouter.get("/stats", TaskController.getTaskStats);
+
+/**
+ * @openapi
+ * /api/v1/tasks/{id}/status:
+ *   put:
+ *     operationId: updateTaskStatus
+ *     summary: Update task status
+ *     tags:
+ *       - Tasks
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Task ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateTaskStatusRequest'
+ *     responses:
+ *       200:
+ *         description: Task status updated successfully
+ */
+taskRouter.put("/:id/status",updateStatusTaskValidation, validateRequest, TaskController.updateStatus);
 
 export default taskRouter;
